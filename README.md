@@ -30,7 +30,7 @@ Converts Python code into fast, optimized C++ using an LLM of your choice. The t
    - GROK_API_KEY
    - GROQ_API_KEY
    - OPENROUTER_API_KEY
-3. (Optional) For local models — `qwen2.5-coder`, `deepseek-coder-v2`, `gpt-oss:20b` — install and run [Ollama](https://ollama.com).
+3. (Optional) For local models — `qwen2.5-coder`, `deepseek-coder-v2`, `gpt-oss:20b`, install and run [Ollama](https://ollama.com).
 4. To use available models from `Hugging-face`, its API-Key needs to be set too.
 
 5. In the Gradio UI, paste Python code (or use the included π-approximation example), choose a model, and click **Convert code**.
