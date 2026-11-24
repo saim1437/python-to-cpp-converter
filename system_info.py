@@ -1,8 +1,7 @@
 """
 system_info.py
 
-Collects basic information about the host machine (OS, CPU, compilers,
-build tools) so it can be handed to an LLM as context when generating
+Collects basic information about the host machine so it can be handed to an LLM as context when generating
 optimized C++ code for this specific system.
 """
 
@@ -126,7 +125,7 @@ def _package_managers():
     return pms
 
 
-# CPU (minimal) 
+# CPU 
 def _cpu_block():
     """Return CPU brand, logical/physical core counts, and supported SIMD flags."""
     sysname = platform.system()
@@ -140,7 +139,7 @@ def _cpu_block():
         if not brand:
             brand = _run("wmic cpu get Name /value").replace("Name=", "").strip()
 
-    # Logical core count is always available; physical count is best effort
+    # Logical core count i
     cores_logical = os.cpu_count() or 0
     cores_physical = 0
     if sysname == "Darwin":
@@ -151,8 +150,7 @@ def _cpu_block():
             or "0"
         )
     elif sysname == "Linux":
-        # Quick approximation: count unique (core id, socket id) pairs.
-        # Good enough for suggesting a parallel -j value.
+       
         try:
             mapping = _run("LC_ALL=C lscpu -p=CORE,SOCKET | grep -v '^#'").splitlines()
             unique = set(tuple(line.split(",")) for line in mapping if "," in line)
@@ -160,7 +158,7 @@ def _cpu_block():
         except Exception:
             cores_physical = 0
 
-    # Best effort SIMD instruction set detection (used to pick safe march flags)
+    # used to pick safe march flag
     simd = []
     if sysname == "Linux":
         flags = _run("grep -m1 'flags' /proc/cpuinfo | cut -d: -f2")
@@ -182,7 +180,6 @@ def _cpu_block():
         for x in ("AVX512F", "AVX2", "AVX", "FMA", "SSE4_2", "NEON", "SVE"):
             if x in feats:
                 simd.append(x)
-    # Windows: skipped — CPU brand is usually enough to pick MSVC /arch flags.
 
     return {
         "brand": brand.strip(),
