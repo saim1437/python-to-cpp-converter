@@ -12,8 +12,6 @@ from openai import OpenAI
 import gradio as gr
 from system_info import retrieve_system_info
 
-# API keys 
-
 load_dotenv(override=True)
 openai_api_key = os.getenv('OPENAI_API_KEY')
 anthropic_api_key = os.getenv('ANTHROPIC_API_KEY')
@@ -22,7 +20,7 @@ grok_api_key = os.getenv('GROK_API_KEY')
 groq_api_key = os.getenv('GROQ_API_KEY')
 openrouter_api_key = os.getenv('OPENROUTER_API_KEY')
 
-# Print which keys were found (only OpenAI is required; the rest are optional)
+
 if openai_api_key:
     print(f"OpenAI API Key exists and begins {openai_api_key[:8]}")
 else:
@@ -54,9 +52,6 @@ else:
     print("OpenRouter API Key not set (and this is optional)")
 
 # model clients
-# Every provider below is accessed through the OpenAI compatible
-# chat.completions API, just pointed at a different base_url.
-
 openai = OpenAI()
 
 anthropic_url = "https://api.anthropic.com/v1/"
@@ -73,7 +68,7 @@ groq = OpenAI(api_key=groq_api_key or "not-set", base_url=groq_url)
 ollama = OpenAI(api_key="ollama", base_url=ollama_url)
 openrouter = OpenAI(api_key=openrouter_api_key or "not-set", base_url=openrouter_url)
 
-# Models selectable in the UI, mapped to the client that serves each one
+# Model selection
 models = [
     "gpt-5",
     "claude-sonnet-4-5-20250929",
@@ -100,9 +95,6 @@ clients = {
 
 
 # system context
-# Gathered once at startup and injected into the prompt so the model can
-# tailor the C++ (compiler, flags, core count) to this specific machine.
-
 system_info = retrieve_system_info()
 compile_command = [
     "clang++", "-std=c++17", "-Ofast", "-mcpu=native",
@@ -110,7 +102,6 @@ compile_command = [
 ]
 run_command = ["./main"]
 
-# prompts 
 system_prompt = """
 Your task is to convert Python code into high performance C++ code.
 Respond only with C++ code. Do not provide any explanation other than occasional comments.
@@ -158,8 +149,7 @@ def port(model, python):
     write_output(reply)
     return reply
 
-# Default Python snippet shown in the UI: a slow pi-approximation loop,
-# useful for demonstrating the speedup from porting to C++.
+# Default Python snippet 
 pi = """
 import time
 
@@ -180,7 +170,7 @@ print(f"Result: {result:.12f}")
 print(f"Execution Time: {(end_time - start_time):.6f} seconds")
 """
 
-# UI
+# interface
 with gr.Blocks() as ui:
     with gr.Row():
         python = gr.Textbox(label="Python code:", lines=28, value=pi)
